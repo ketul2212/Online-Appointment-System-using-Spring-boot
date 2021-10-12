@@ -1,16 +1,21 @@
-<!doctype html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="utf-8">
+<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <style>
+<title>Update Profile</title>
+
+<style>
         form {
             margin-top: 0px;
         }
@@ -21,89 +26,24 @@
             }
         }
     </style>
-
-    <title>Register</title>
 </head>
-
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <div class="container">
-        <form action="./reg" method = "POST" >
+	
+	<div class="container">
+        <form action="./update" method = "GET" >
 
             <div class="row">
                 <div class="col-sm mt-sm-5">
-                    <h1>Register Form</h1>
+                    <h1>Update Form</h1>
 
-                    <div class="mb-3 mt-2">
-                        <div class="row">
-                            <div class="col-sm">
-                                <label for="fname" class="form-label">First Name</label>
-                                <input type="text" name="fname" class="form-control" placeholder="First Name...">
-                            </div>
-
-                            <div class="col-sm">
-                                <label for="lname" class="form-label">Last Name</label>
-                                <input type="text" name="lname" class="form-control" placeholder="Last Name...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" name="email" class="form-control" placeholder="name@example.com">
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="row">
-                            <div class="col-sm">
-                                <label for="pass" class="form-label">Password</label>
-                                <input type="password" name="pass" class="form-control" placeholder="Password...">
-                            </div>
-
-                            
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Role</label>
-                        <select name="role" id="role" class="form-control">
-                            <option value="0">Select Role</option>
-                            <option value="ROLE_DOCTOR">Doctor</option>
-                            <option value="ROLE_PATIENT">Patient</option>
-                        </select>
-                    </div>
-
-                   <!--  <script>
-                        $(document).ready(function () {
-                            $("#role").change(() => {
-                                var role = $('#role').val();
-                                console.log(role);
-                                if(role == 0) {
-                                	$("#doctor,#patient").each(function(){
-    									 $("#patient").removeClass('d-none');
-    									 $("#doctor").removeClass('d-none');
-    									 $("#non").addClass('d-none');
-								});
-                          
-                                } else if (role == 'ROLE_PATIENT') {
-                                    $("#doctor").addClass('d-none');
-                                    $("#patient").removeClass('d-none');
-                                } else if (role == 'ROLE_DOCTOR') {
-                                    $("#doctor").removeClass('d-none');
-                                    $("#patient").addClass('d-none');
-                                }  
-                            })
-                        });
-                    </script>
+                    
+					<sec:authorize access="hasRole('ROLE_DOCTOR')">
 					
-					<div id="non" class="d-none">
-					</div>
-					
-                    <div id="doctor" class="d-none">
+                    <div id="doctor">
                         <div class="mb-3">
                             <div class="row">
                                 <div class="col-sm">
@@ -142,8 +82,9 @@
 
 
                     </div>
-
-                    <div id="patient" class="d-none">
+					</sec:authorize>
+     				<sec:authorize access="hasRole('ROLE_PATIENT')">
+                    <div id="patient">
                         <div class="mb-3">
                             <div class="row">
                                 <div class="col-sm">
@@ -186,8 +127,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div> -->
-
+                    </div>
+					</sec:authorize>
                     <input type="submit" value="Register" name="submit" class="btn btn-primary mt-3" />
                     <div class="mb-3">
                     
@@ -199,6 +140,7 @@
             </div>
         </form>
     </div>
+	
+	
 </body>
-
 </html>

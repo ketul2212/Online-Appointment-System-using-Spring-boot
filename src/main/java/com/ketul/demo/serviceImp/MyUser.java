@@ -15,7 +15,6 @@ public class MyUser implements UserDetails{
 	 * 
 	 */
 	
-	
 	private User user;
 
     public MyUser(User user) {
