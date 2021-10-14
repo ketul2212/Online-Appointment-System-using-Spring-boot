@@ -123,16 +123,16 @@
                                         </select>
                                     </div>
                                 </div>
-								<!-- <div class="col-sm">
+								<div class="col-sm">
                                 	<label for="slot" class="form-label">Slot</label>
-                                	<select name="endTime" class="form-control">
+                                	<select name="slot" class="form-control">
                                             <option value="">Select slot</option>
                                             <option value="10">10</option>
                                             <option value="15">15</option>
                                             <option value="20">20</option>
                                             <option value="30">30</option>
                                     </select>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 

@@ -1,5 +1,6 @@
 package com.ketul.demo.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import com.ketul.demo.model.User;
 import com.ketul.demo.model.dto.UpdateProfileDto;
 import com.ketul.demo.model.dto.UserDto;
 import com.ketul.demo.repo.AppointmentRepo;
+import com.ketul.demo.repo.AvailabilityRepo;
 import com.ketul.demo.repo.DocRepo;
 import com.ketul.demo.serviceImp.ServiceImp;
 
@@ -31,6 +33,9 @@ public class MyController {
 	
 	@Autowired
 	private DocRepo docRepo;
+	
+	@Autowired
+	private AvailabilityRepo availabilityRepo;
 	
 	@Autowired
 	private AppointmentRepo appointmentRepo;
@@ -60,14 +65,33 @@ public class MyController {
 	}
 	
 	@RequestMapping("/addAvailability")
-	public String addAvailability(Availability availability) {
+	public ModelAndView addAvailability(Availability availability) {
 		return serviceImp.saveAvailability(availability);
 	}
 
+	@RequestMapping("/saveApprovedAvailability")
+	public String saveApprovedAvailability() {
+		return serviceImp.saveApprovedAvailability();
+	}
+	
+	
 	@RequestMapping("/appointment")
 	public ModelAndView appointment() {
 		ModelAndView mv = new ModelAndView("appointment.jsp");
 		mv.addObject("doctor", docRepo.findAll());
+		
+		List<Availability> availabilityList  = availabilityRepo.findAll();
+		
+		Iterator<Availability> itr = availabilityList.iterator();
+		
+		while(itr.hasNext()) {
+			Availability availability = (Availability)itr.next();
+			
+			if(availability.getAvailable().equals("false"))
+				itr.remove();
+		}
+		
+		mv.addObject("listAvailabilityTime", availabilityList);
 		return mv;
 	}
 	
@@ -106,5 +130,11 @@ public class MyController {
 	@RequestMapping("/update")
 	public String updateProfiles(UpdateProfileDto updateProfileDto) {
 		return serviceImp.update(updateProfileDto);
+	}
+	
+	
+	@RequestMapping("/history")
+	public ModelAndView getHistory() {
+		return serviceImp.history();
 	}
 }

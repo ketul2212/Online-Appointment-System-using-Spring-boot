@@ -31,7 +31,7 @@
         	<div class="collapse navbar-collapse" id="navbarAdmin">
             	<div class="navbar-nav">
                 	<a class="nav-item nav-link" href="${contextPath}/dashbord/availability">Add Availability</a>
-                    <a class="nav-item nav-link" href="${contextPath}/dashboard">History</a>
+                    <a class="nav-item nav-link" href="${contextPath}/history">History</a>
                     <a class="nav-item nav-link" href="${contextPath}/appointments">Appointments</a>
                     <a class="nav-item nav-link" href="${contextPath}/updateProfile">Update Profile</a>
                 </div>
@@ -43,7 +43,7 @@
         	<div class="collapse navbar-collapse" id="navbarManager">
             	<div class="navbar-nav">
                 	<a class="nav-item nav-link" href="${contextPath}/appointment">Add Appointment</a>
-                	<a class="nav-item nav-link" href="${contextPath}/dashboard">History</a>
+                	<a class="nav-item nav-link" href="${contextPath}/history">History</a>
                     <a class="nav-item nav-link" href="${contextPath}/show">show doctor</a>
                     <a class="nav-item nav-link" href="${contextPath}/updateProfile">Update Profile</a>
                 </div>

@@ -50,7 +50,7 @@ public class Availability{
 	
 	private String endTime;
 	
-//	private String slot;
+	private String slot;
 	
 	private String available = "true";
 
@@ -68,23 +68,25 @@ public class Availability{
 	}
 	
 	
-//	public Availability(int available_id, Timestamp createdAt, Doctor doctor, String date, String startTime,
-//			String endTime, String available, String slot) {
-//		super();
-//		this.available_id = available_id;
-//		this.createdAt = createdAt;
-//		this.doctor = doctor;
-//		this.date = date;
-//		this.startTime = startTime;
-//		this.endTime = endTime;
-//		this.available = available;
-//		this.slot = slot;
-//	}
+	public Availability(int available_id, Timestamp createdAt, Doctor doctor, String date, String startTime,
+			String endTime, String available, String slot) {
+		super();
+		this.available_id = available_id;
+		this.createdAt = createdAt;
+		this.doctor = doctor;
+		this.date = date;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.available = available;
+		this.slot = slot;
+	}
 	
 	
 	public Availability() {
 		
 	}
+
+
 	public int getAvailable_id() {
 		return available_id;
 	}
@@ -129,18 +131,18 @@ public class Availability{
 		this.available = available;
 	}
 	
-//	public String getSlot() {
-//		return slot;
-//	}
-//	public void setSlot(String slot) {
-//		this.slot = slot;
-//	}
+	public String getSlot() {
+		return slot;
+	}
+	public void setSlot(String slot) {
+		this.slot = slot;
+	}
 
 
-//	@Override
-//	public String toString() {
-//		return "Availability [available_id=" + available_id + ", createdAt=" + createdAt + ", doctor=" + doctor
-//				+ ", date=" + date + ", startTime=" + startTime + ", endTime=" + endTime + ", slot=" + slot
-//				+ ", available=" + available + "]";
-//	}
+	@Override
+	public String toString() {
+		return "Availability [available_id=" + available_id + ", createdAt=" + createdAt + ", doctor=" + doctor
+				+ ", date=" + date + ", startTime=" + startTime + ", endTime=" + endTime + ", slot=" + slot
+				+ ", available=" + available + "]";
+	}
 }

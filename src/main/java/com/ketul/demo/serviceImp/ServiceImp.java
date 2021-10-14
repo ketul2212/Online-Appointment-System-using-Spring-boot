@@ -4,6 +4,7 @@ import org.eclipse.persistence.sessions.factories.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ketul.demo.model.Appointment;
 import com.ketul.demo.model.Availability;
 import com.ketul.demo.model.Doctor;
+import com.ketul.demo.model.History;
 import com.ketul.demo.model.Patient;
 import com.ketul.demo.model.User;
 import com.ketul.demo.model.dto.UpdateProfileDto;
@@ -35,6 +37,7 @@ import com.ketul.demo.model.dto.UserDto;
 import com.ketul.demo.repo.AppointmentRepo;
 import com.ketul.demo.repo.AvailabilityRepo;
 import com.ketul.demo.repo.DocRepo;
+import com.ketul.demo.repo.HistoryRepo;
 import com.ketul.demo.repo.MyRepo;
 import com.ketul.demo.repo.PatRepo;
 
@@ -43,12 +46,18 @@ import java.util.Iterator;
 @Service
 public class ServiceImp implements UserDetailsService{
 	
-
+	
+	
+	private List<Availability> list;
+	
 	private String uName;
 	
 	private Availability availability = new Availability();
 	
 	private UpdateProfileDto updateProfileDto = new UpdateProfileDto();
+	
+	@Autowired
+	private HistoryRepo historyRepo;
 	
 	@Autowired
     private PasswordEncoder passwordEncoder;
@@ -68,6 +77,8 @@ public class ServiceImp implements UserDetailsService{
 	@Autowired
     private MyRepo myRepo;
 
+	private String role;
+
 
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -83,6 +94,7 @@ public class ServiceImp implements UserDetailsService{
         	grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
             System.out.println(availability);
             System.out.println(updateProfileDto.getRole());
+            role = user.getRole();
             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPass(), grantedAuthorities);
         }
 	}
@@ -105,82 +117,6 @@ public class ServiceImp implements UserDetailsService{
 	}
 
 
-	public String saveAvailability(Availability availability) {
-		availability.setDoctor(this.availability.getDoctor());
-		
-//		if(availabilityRepo.existsById(availability.getDoctor_A_id())) {
-//			availability.
-//		}
-//		Doctor d = availabilityRepo.findByDoctor(availability.getDoctor());
-//		if(d != null)
-		
-//		System.out.println(availability.getDoctor());
-		
-		String start = availability.getStartTime();
-		String end = availability.getEndTime();
-		
-		String testStart = start;
-		
-//		System.out.println(!start.equals(end));
-//		System.out.println(start + "   " + end);
-		
-		String[] splitTimeStart;
-		
-		int startPre = 0;
-		
-		if(!start.equals(end)) {
-			do {
-				
-				System.out.println(testStart);
-
-				splitTimeStart = testStart.split(":");
-				startPre = Integer.parseInt(splitTimeStart[0]);
-				
-				if(startPre == 12)
-					startPre = 0;
-				
-//				System.out.println(splitTimeStart[0] + "  " + splitTimeStart[1]);
-				if(startPre == 11 && splitTimeStart[1].substring(2).equals("AM"))
-					availability.setEndTime("" + (startPre + 1) + ":00PM");
-				else if(startPre == 11 && splitTimeStart[1].substring(2).equals("PM"))
-					availability.setEndTime("" + (startPre + 1) + ":00AM");
-				else
-					availability.setEndTime("" + (startPre + 1) + ":" +splitTimeStart[1]);
-
-			
-				availabilityRepo.save(new Availability(availability.getAvailable_id(), availability.getCreatedAt(), availability.getDoctor(), availability.getDate(), availability.getStartTime(), availability.getEndTime(), availability.getAvailable()));
-				
-				if(startPre == 11 && splitTimeStart[1].substring(2).equals("AM"))
-					availability.setStartTime("" + (startPre + 1) + ":00PM");
-				else if(startPre == 11 && splitTimeStart[1].substring(2).equals("PM"))
-					availability.setStartTime("" + (startPre + 1) + ":00AM");
-				else if(startPre >= 12)
-					availability.setStartTime("" + 1 + ":" + splitTimeStart[1]);
-				else
-					availability.setStartTime("" + (startPre + 1) + ":" + splitTimeStart[1]);
-
-				
-				testStart = availability.getStartTime();
-				
-				
-				try {
-					Thread.sleep(10000);
-				} catch(InterruptedException e) {
-					e.printStackTrace();
-				}
-				
-//				System.out.println(testStart + " " + testEnd);
-				System.out.println(end);
-				
-				
-			} while(!testStart.equals(end));
-		} 
-		else
-			return "redirect: /errorInAvailable";
-		
-		return "redirect:/login";
-	}
-
 //	public String saveAvailability(Availability availability) {
 //		availability.setDoctor(this.availability.getDoctor());
 //		
@@ -194,54 +130,60 @@ public class ServiceImp implements UserDetailsService{
 //		
 //		String start = availability.getStartTime();
 //		String end = availability.getEndTime();
-//		int slot = Integer.parseInt(availability.getSlot());
 //		
 //		String testStart = start;
 //		
 ////		System.out.println(!start.equals(end));
 ////		System.out.println(start + "   " + end);
 //		
-//		String[] splitTimeStart, splitTimeEnd;
+//		String[] splitTimeStart;
 //		
-//		int startPre = 0, startPost = 0;
+//		int startPre = 0;
 //		
 //		if(!start.equals(end)) {
 //			do {
 //				
-////				System.out.println(testStart + " " + testEnd);
+//				System.out.println(testStart);
 //
 //				splitTimeStart = testStart.split(":");
 //				startPre = Integer.parseInt(splitTimeStart[0]);
-//				startPost = Integer.parseInt(splitTimeStart[1].substring(0, 2));
 //				
-//				if(splitTimeStart[1].substring(0, 2).equals("50"))
-//					availability.setEndTime("" + (startPre + 1) + ":00PM");
-//					
 //				if(startPre == 12)
 //					startPre = 0;
 //				
 ////				System.out.println(splitTimeStart[0] + "  " + splitTimeStart[1]);
 //				if(startPre == 11 && splitTimeStart[1].substring(2).equals("AM"))
-//					availability.setEndTime("" + startPre + ":" + (startPost + slot) + "PM");
+//					availability.setEndTime("" + (startPre + 1) + ":00PM");
 //				else if(startPre == 11 && splitTimeStart[1].substring(2).equals("PM"))
-//					availability.setEndTime("" + (startPre) + ":" + (startPost + slot) + "AM");
+//					availability.setEndTime("" + (startPre + 1) + ":00AM");
 //				else
-//					availability.setEndTime("" + (startPre) + ":" + (startPost + slot));
+//					availability.setEndTime("" + (startPre + 1) + ":" +splitTimeStart[1]);
 //
 //			
 //				availabilityRepo.save(new Availability(availability.getAvailable_id(), availability.getCreatedAt(), availability.getDoctor(), availability.getDate(), availability.getStartTime(), availability.getEndTime(), availability.getAvailable()));
 //				
 //				if(startPre == 11 && splitTimeStart[1].substring(2).equals("AM"))
-//					availability.setStartTime("" + (startPre) + ":" + (startPost + slot) + "PM");
+//					availability.setStartTime("" + (startPre + 1) + ":00PM");
 //				else if(startPre == 11 && splitTimeStart[1].substring(2).equals("PM"))
-//					availability.setStartTime("" + (startPre) + ":" + (startPost + slot) + "AM");
-//				else if(startPre == 12 && splitTimeStart[1].substring(0, 1).equals("50"))
-//					availability.setStartTime("" + 1 + ":" + 00 + splitTimeStart[1].substring(2));
+//					availability.setStartTime("" + (startPre + 1) + ":00AM");
+//				else if(startPre >= 12)
+//					availability.setStartTime("" + 1 + ":" + splitTimeStart[1]);
 //				else
-//					availability.setStartTime("" + (startPre) + ":" + (startPost + slot) + splitTimeStart[1].substring(2));
+//					availability.setStartTime("" + (startPre + 1) + ":" + splitTimeStart[1]);
 //
 //				
 //				testStart = availability.getStartTime();
+//				
+//				
+//				try {
+//					Thread.sleep(10000);
+//				} catch(InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//				
+////				System.out.println(testStart + " " + testEnd);
+//				System.out.println(end);
+//				
 //				
 //			} while(!testStart.equals(end));
 //		} 
@@ -251,6 +193,90 @@ public class ServiceImp implements UserDetailsService{
 //		return "redirect:/login";
 //	}
 
+	public ModelAndView saveAvailability(Availability availability) {
+		availability.setDoctor(this.availability.getDoctor());
+		
+		this.availability = availability;
+		
+		ModelAndView mv = new ModelAndView("show-availability.jsp");
+		
+		String start = availability.getStartTime();
+		String end = availability.getEndTime();
+		
+		int slot = Integer.parseInt(availability.getSlot());
+		
+		String testStart = start;
+		String testEnd;
+		
+		System.out.println(!start.equals(end));
+		System.out.println(start + "   " + end);
+		
+//		boolean flag = false;
+		
+		String[] splitTimeStart, splitTimeEnd;
+		
+		splitTimeEnd = end.split(":");
+		testEnd = "" + Integer.parseInt(splitTimeEnd[0]) + ":" + splitTimeEnd[1];
+		
+		list = new ArrayList<Availability>();
+		
+		int startPre = 0, startPost = 0;
+		
+		if(!start.equals(end)) {
+			
+			do {
+				
+				System.out.println(testStart + " " + testEnd);
+
+				splitTimeStart = testStart.split(":");
+				startPre = Integer.parseInt(splitTimeStart[0]);
+				startPost = Integer.parseInt(splitTimeStart[1].substring(0, 2));
+				
+				
+				
+				if(startPre == 12 && ((startPost + slot) == 60))
+					availability.setEndTime("1:00" + splitTimeStart[1].substring(2));
+				else if(startPre == 11 && ((startPost + slot) == 60) && splitTimeStart[1].substring(2).equals("AM"))
+						availability.setEndTime("12:00PM");
+				else if (startPre == 11 && ((startPost + slot) == 60) && splitTimeStart[1].substring(2).equals("PM"))
+					availability.setEndTime("12:00AM");
+				else if((startPost + slot) == 60)
+					availability.setEndTime("" + (startPre + 1) + ":00" + splitTimeStart[1].substring(2));					
+				else
+					availability.setEndTime("" + startPre + ":" + (startPost + slot) + splitTimeStart[1].substring(2));
+				
+//				availabilityRepo.save(new Availability(availability.getAvailable_id(), availability.getCreatedAt(), availability.getDoctor(), availability.getDate(), availability.getStartTime(), availability.getEndTime(), availability.getAvailable()));									
+				System.out.println(splitTimeStart[0] + "  " + splitTimeStart[1]);
+				list.add(new Availability(availability.getAvailable_id(), availability.getCreatedAt(), availability.getDoctor(), availability.getDate(), availability.getStartTime(), availability.getEndTime(), availability.getAvailable(), availability.getSlot()));									
+
+				
+				if(startPre == 12 && ((startPost + slot) == 60))
+					availability.setStartTime("1:00" + splitTimeStart[1].substring(2));
+				else if(startPre == 12 && ((startPost + slot) == 60))
+					availability.setStartTime("1:00" + splitTimeStart[1].substring(2));
+				else if(startPre == 11 && ((startPost + slot) == 60) && splitTimeStart[1].substring(2).equals("AM"))
+					availability.setStartTime("12:00PM");
+				else if(startPre == 11 && ((startPost + slot) == 60) && splitTimeStart[1].substring(2).equals("PM"))
+					availability.setStartTime("12:00AM");
+				else if((startPost + slot) == 60)
+					availability.setStartTime("" + (startPre + 1) + ":00" + splitTimeStart[1].substring(2));
+				else
+					availability.setStartTime("" + startPre + ":" + (startPost + slot) + splitTimeStart[1].substring(2));
+					
+//				try {
+//					Thread.sleep(10000);
+//				} catch(InterruptedException e) {
+//					e.printStackTrace();
+//				}
+				
+				testStart = availability.getStartTime();
+				
+			} while(!testStart.equals(end));
+		}
+		
+		mv.addObject("availability", list);
+		return mv;
+	}
 	
 	
 	public ModelAndView show() {
@@ -265,29 +291,24 @@ public class ServiceImp implements UserDetailsService{
 //		System.out.println(available);
 		
 		boolean flag = false;
-		String[] startSplit = appointment.getStartTime().split(":");
-		int start = Integer.parseInt(startSplit[0]);
-		start++;
-		if(start == 13)
-			start = 1;
-		if(start == 12 && startSplit[1].substring(2).equals("AM"))
-			appointment.setEndTime("" + start + ":00PM");
-		else if(start == 12 && startSplit[1].substring(2).equals("PM"))
-			appointment.setEndTime("" + start + ":00AM");
-		else
-			appointment.setEndTime("" + start + ":" + startSplit[1]);
+		
 //		System.out.println(appointment.getStartTime() + "   " + appointment.getEndTime());
 		for(Availability availability : available) {
 			if(availability.getDoctor().getFname().equals(appointment.getDoctorName())) {
-				if(availability.getDate().equals(appointment.getDate()) && availability.getStartTime().equals(appointment.getStartTime()) && availability.getEndTime().equals(appointment.getEndTime()) && availability.getAvailable().equals("true")) {
+				if(availability.getDate().equals(appointment.getDate()) && availability.getStartTime().equals(appointment.getStartTime()) && availability.getAvailable().equals("true")) {
 					appointment.setStatus("PANDING");
 					
 //					System.out.println(availability);
 					appointment.setDoctorName(availability.getDoctor().getEmail());
+					appointment.setEndTime(availability.getEndTime());
 					appointmentRepo.save(appointment);
 					
 					availability.setAvailable("false");
 					availabilityRepo.save(availability);
+					
+					
+					historyRepo.save(new History(uName, appointment));
+					
 					flag = true;
 					break;
 				}
@@ -330,6 +351,14 @@ public class ServiceImp implements UserDetailsService{
 		Appointment appointment = appointmentRepo.findById(Integer.parseInt(appointment_id)).orElse(new Appointment());
 		appointment.setStatus("REJECTED");
 		appointmentRepo.save(appointment);
+		
+		List<Availability> avalabilityList = availabilityRepo.findAll();
+		
+		for(Availability avalability : avalabilityList) {
+			if(avalability.getStartTime().equals(appointment.getStartTime()) && avalability.getDoctor().getEmail().equals(appointment.getDoctorName()))
+				avalability.setAvailable("true");
+				availabilityRepo.save(avalability);
+		}
 		return "redirect:/login";
 	}
 
@@ -371,5 +400,41 @@ public class ServiceImp implements UserDetailsService{
 		return "redirect:/login";
 	}
 
+	public String saveApprovedAvailability() {
+		for(Availability a : list)
+			availabilityRepo.save(a);
+			
+		System.out.println(list);
+		return "redirect:/login";
+	}
+
+	public ModelAndView history() {
+		ModelAndView mv = new ModelAndView("history.jsp");
+		List<History> historyList = historyRepo.findAll();
+		
+		Iterator<History> itr = historyList.iterator();
+		
+		
+		if(role.equals("ROLE_DOCTOR")) {
+			while(itr.hasNext()) {
+				History history = (History)itr.next();
+			
+				if(!history.getAppointment().getDoctorName().equals(uName))
+					itr.remove();
+			}
+		}
+		else {
+			while(itr.hasNext()) {
+				History history = (History)itr.next();
+				
+				if(!history.getPatientName().equals(uName))
+					itr.remove();
+			}
+		}
+		mv.addObject("history", historyList);
+		return mv;
+	}
+
+	
 	
 }
