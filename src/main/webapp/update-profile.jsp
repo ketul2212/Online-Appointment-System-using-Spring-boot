@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,7 +34,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	
 	<div class="container">
-        <form action="./update" method = "GET" >
+        <form action="./update" method = "POST" enctype="multipart/form-data" th:object="${updateProfileDto}">
 
             <div class="row">
                 <div class="col-sm mt-sm-5">
@@ -77,7 +77,7 @@
 
                         <div class="form-group">
                             <label for="profile">Enter Your Photo</label>
-                            <input type="file" name="profile" class="form-control-file" accept="image/*">
+                            <input type="file" name="image" class="form-control-file" accept="image/*">
                         </div>
 
 

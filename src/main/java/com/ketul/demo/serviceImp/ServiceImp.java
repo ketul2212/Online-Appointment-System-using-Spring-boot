@@ -4,6 +4,9 @@ import org.eclipse.persistence.sessions.factories.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.modelmapper.ModelMapper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.Path;
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.Session;
 
@@ -24,6 +28,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ketul.demo.model.Appointment;
@@ -362,7 +368,7 @@ public class ServiceImp implements UserDetailsService{
 		return "redirect:/login";
 	}
 
-	public String update(UpdateProfileDto updateProfileDto) {
+	public String update(UpdateProfileDto updateProfileDto, String fileName, MultipartFile multipartFile) throws IOException {
 		if(this.updateProfileDto.getRole().equals("ROLE_DOCTOR")) {
 //			System.out.println(uName);
 			
@@ -376,8 +382,13 @@ public class ServiceImp implements UserDetailsService{
 					doctor.setExperience(updateProfileDto.getExperience());
 					doctor.setSpacialization(updateProfileDto.getSpacialization());
 					doctor.setProfile(updateProfileDto.getProfile());
-					
 					docRepo.save(doctor);
+					
+					
+					String uploadDir = "user-photos/" + doctor.getEmail();
+					 
+			        FileUploadDto.saveFile(uploadDir, fileName, multipartFile);
+
 					break;
 				}
 			}
@@ -400,6 +411,8 @@ public class ServiceImp implements UserDetailsService{
 		return "redirect:/login";
 	}
 
+    
+	
 	public String saveApprovedAvailability() {
 		for(Availability a : list)
 			availabilityRepo.save(a);

@@ -25,7 +25,7 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
-//	private static final String[] authorizedURL = {"/"};
+	private static final String[] authorizedURL = {"/show"};
 
 
     @Autowired
@@ -62,6 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     			.disable()
     			.authorizeRequests()
     			.antMatchers("/**").permitAll()
+    			.antMatchers(authorizedURL).permitAll()
     			.anyRequest().authenticated()
     			.and()
                 .formLogin()

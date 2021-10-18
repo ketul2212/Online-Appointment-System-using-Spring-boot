@@ -47,6 +47,7 @@
                     <th>experience</th>
                     <th>clinic name</th>
                     <th>clinic address</th>
+                    <th>Doctor Profile</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,6 +59,8 @@
                         <td>${doctorValue.experience}</td>
                         <td>${doctorValue.nclinic}</td>
                         <td>${doctorValue.aclinic}</td>
+                        <td><img alt="img" src="/home/ketul/Documents/workspace-spring-tool-suite-4-4.12.0.RELEASE/OnlineAppointment-1/user-photos/${doctorValue.email}/${doctorValue.profile}" /></td>
+                    	<td>user-photos/${doctorValue.email}/${doctorValue.profile}</td>
                     </tr>
                 </c:forEach>
             </tbody>
@@ -69,9 +72,12 @@
                     <th>experience</th>
                     <th>clinic name</th>
                     <th>clinic address</th>
+                    <th>Doctor Profile</th>
                 </tr>
             </tfoot>
         </table>
+        
+        
         <script>
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
