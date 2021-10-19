@@ -99,7 +99,7 @@ public class MyController {
 			
 			int datePre = Integer.parseInt(availability.getDate().split("/")[0]);
 			
-			if(availability.getAvailable().equals("false") && datePre < splitDate)
+			if(availability.getAvailable().equals("false") || datePre < splitDate)
 				itr.remove();
 			
 			
